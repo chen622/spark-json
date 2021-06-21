@@ -14,7 +14,6 @@ public class Benchmark {
         peopleData.createOrReplaceTempView("test");
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("It takes " + (end - start) + " ms to read data into memory.");
-        System.out.println("*****************************************************************************************************************");
 
         //selection1 test
         System.out.println("This is Selection test. ");
@@ -23,7 +22,6 @@ public class Benchmark {
         System.out.println("Select res length: " + selectionRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Selection operation takes " + (end - start) + " ms. ");
-        System.out.println("*****************************************************************************************************************");
         selectionRes.unpersist();
 
         //projection test1
@@ -33,7 +31,6 @@ public class Benchmark {
         System.out.println("Project res length: " + projectionRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Projection operation takes " + (end - start) + " ms. ");
-        System.out.println("*****************************************************************************************************************");
         projectionRes.unpersist();
 
         //aggregation test

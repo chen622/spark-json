@@ -18,34 +18,38 @@ public class ReadMongo {
         SparkSession session = SparkSession
                 .builder()
                 .appName("ReadMongo")
-                .config("spark.mongodb.input.uri", "mongodb://mongodb/test")
+                .config("spark.mongodb.input.uri", "mongodb://test:jjfjj123@mongodb/test.course")
                 .getOrCreate();
         JavaSparkContext jsc = new JavaSparkContext(session.sparkContext());
-        String path = "mongodb://admin:UCASbdms@mongodb";
 
         Map<String, String> readOptions = new HashMap<String, String>();
         readOptions.put("collection", "course");
+        readOptions.put("readPreference.name", "secondaryPreferred");
         ReadConfig readConfig = ReadConfig.create(jsc).withOptions(readOptions);
-        JavaMongoRDD<Document> secAllRdd = MongoSpark.load(jsc, readConfig);
-        Dataset<Row> course = secAllRdd.toDS(Row.class);
+        Dataset<Row> course = MongoSpark.loadAndInferSchema(session, readConfig);
         course.persist();
 
-        readOptions.put("collection", "people_line_100w");
-        Dataset<Row> data1 = MongoSpark.load(jsc, ReadConfig.create(jsc).withOptions(readOptions)).toDS(Row.class);
+        readOptions.put("collection", "people_line_100k");
+        Dataset<Row> data1 = MongoSpark.loadAndInferSchema(session, ReadConfig.create(jsc).withOptions(readOptions));
         Benchmark.apOperations(data1, course, session);
 
-        readOptions.put("collection", "people_line_500w");
+        readOptions.put("collection", "people_line_500k");
         Dataset<Row> data2 = MongoSpark.load(jsc, ReadConfig.create(jsc).withOptions(readOptions)).toDS(Row.class);
         Benchmark.apOperations(data2, course, session);
 
-        readOptions.put("collection", "people_child_100w_5");
+        readOptions.put("collection", "people_child_100k_5");
         Dataset<Row> data3 = MongoSpark.load(jsc, ReadConfig.create(jsc).withOptions(readOptions)).toDS(Row.class);
         Benchmark.apOperations(data3, course, session);
 
-        readOptions.put("collection", "people_child_100w_10");
+        readOptions.put("collection", "people_child_100k_10");
         Dataset<Row> data4 = MongoSpark.load(jsc, ReadConfig.create(jsc).withOptions(readOptions)).toDS(Row.class);
         Benchmark.apOperations(data4, course, session);
 
         course.unpersist();
+
+        System.out.println("Finish all jobs!!!");
+        System.out.println("*****************************************************************************************************************");
+
     }
+
 }

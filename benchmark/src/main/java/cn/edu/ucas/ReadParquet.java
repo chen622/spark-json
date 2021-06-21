@@ -13,7 +13,7 @@ public class ReadParquet {
                 .builder()
                 .appName("ReadParquet")
                 .getOrCreate();
-        String path = "hdfs://192.168.0.72:9000/";
+        String path = "hdfs://192.168.0.72:9000/data/";
 
         Dataset<Row> course = session.read().option("multiline", "false").parquet(path + "course.parquet");
         course.persist();

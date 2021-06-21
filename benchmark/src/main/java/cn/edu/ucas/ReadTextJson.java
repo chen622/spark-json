@@ -27,5 +27,9 @@ public class ReadTextJson {
         Benchmark.apOperations(data4, course, session);
 
         course.unpersist();
+
+        System.out.println("Finish all jobs!!!");
+        System.out.println("*****************************************************************************************************************");
+
     }
 }
