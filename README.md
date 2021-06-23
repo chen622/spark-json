@@ -1,6 +1,6 @@
 # Spark 对 JSON 的支持
 
-国科大大数据系统与分析课程大作业，调研 Spark 对 JSON 数据格式的支持，主要测试了读取 JSON 文件、读取 Paraquet 文件、读取 MongoDB、各种 AP 操作。
+大数据系统与大规模数据分析课程大作业，调研 Spark 对 JSON 数据格式的支持，主要测试了读取 JSON 文件、读取 Paraquet 文件、读取 MongoDB、各种 AP 操作。
 
 ## 快速上手
 
