@@ -21,7 +21,7 @@ type Course struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
 	Score     int    `json:"score"`
-	StudentId int    `json:"student_id"`
+	StudentId int    `json:"student_id" bson:"student_id"`
 }
 
 func GenerateCourse(c2 chan int) {

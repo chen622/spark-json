@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"math"
+	"os"
 	"runtime"
+	"strconv"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,8 +16,8 @@ import (
 
 var singleRoutineAmount = 10000
 
-const MAX_DEPTH = 10
-const TOTAL_BIG = 100
+const MAX_DEPTH = 5
+const TOTAL_BIG = 500
 const DATA_TYPE = "child"
 
 func Generate(start int, c chan *People, dataType string) {
@@ -40,8 +44,8 @@ func main() {
 	c := make(chan *People, 1000)
 	var total = TOTAL_BIG * 10000
 
-	c2 := make(chan int)
-	go GenerateCourse(c2)
+	//c2 := make(chan int)
+	//go GenerateCourse(c2)
 
 	var list []interface{}
 	singleRoutineAmount = int(math.Round(float64(total) / float64(runtimeAmount)))
@@ -67,7 +71,7 @@ func main() {
 		}
 	}
 
-	fmt.Println("Generate finished")
+	fmt.Println("Generate finished: " + strconv.Itoa(len(list)))
 
 	mongoURI := fmt.Sprintf("mongodb://%s:%s@%s", "admin", "UCASbdms", "121.36.63.143:30002")
 	fmt.Println("connection string is:", mongoURI)
@@ -77,31 +81,31 @@ func main() {
 	ctx := context.TODO()
 	client, _ := mongo.Connect(ctx, clientOptions)
 
-	var collectionName string = fmt.Sprintf("people_%s_%dk", DATA_TYPE, TOTAL_BIG)
+	var collectionName string = fmt.Sprintf("people_%s_%dw", DATA_TYPE, TOTAL_BIG)
 	if DATA_TYPE == "child" {
-		collectionName = fmt.Sprintf("people_%s_%dk_%d", DATA_TYPE, TOTAL_BIG, MAX_DEPTH)
+		collectionName = fmt.Sprintf("people_%s_%dw_%d", DATA_TYPE, TOTAL_BIG, MAX_DEPTH)
 	}
 	client.Database("test").Collection(collectionName).Drop(ctx)
 	client.Database("test").Collection(collectionName).InsertMany(ctx, list)
 
-	//var result []byte
-	//for _, p := range list {
-	//	str, _ := json.Marshal(p)
-	//	result = append(result, str...)
-	//	result = append(result, byte('\n'))
-	//}
+	var result []byte
+	for _, p := range list {
+		str, _ := json.Marshal(p)
+		result = append(result, str...)
+		result = append(result, byte('\n'))
+	}
 
-	//var fileName string = fmt.Sprintf("dataset/%s_%dk.json", DATA_TYPE, TOTAL_BIG)
-	//if DATA_TYPE == "child" {
-	//	fileName = fmt.Sprintf("dataset/%s_%dk_%d.json", DATA_TYPE, TOTAL_BIG, MAX_DEPTH)
-	//
-	//}
-	//resultFile, _ := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
-	//defer resultFile.Close()
-	//w := bufio.NewWriter(resultFile)
-	//w.Write(result)
-	//
-	for _ = range c2 {
+	var fileName string = fmt.Sprintf("dataset/%s_%dw.json", DATA_TYPE, TOTAL_BIG)
+	if DATA_TYPE == "child" {
+		fileName = fmt.Sprintf("dataset/%s_%dk_%d.json", DATA_TYPE, TOTAL_BIG, MAX_DEPTH)
 
 	}
+	resultFile, _ := os.OpenFile(fileName, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	defer resultFile.Close()
+	w := bufio.NewWriter(resultFile)
+	w.Write(result)
+
+	//for _ = range c2 {
+	//
+	//}
 }

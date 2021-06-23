@@ -9,7 +9,7 @@ public class Benchmark {
         double start, end;
 
         start = Double.parseDouble(String.valueOf(new Date().getTime()));
-        peopleData.persist();
+        peopleData = peopleData.persist();
         System.out.println("Data set length: " + peopleData.count());
         peopleData.createOrReplaceTempView("test");
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
@@ -22,7 +22,6 @@ public class Benchmark {
         System.out.println("Select res length: " + selectionRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Selection operation takes " + (end - start) + " ms. ");
-        selectionRes.unpersist();
 
         //projection test1
         System.out.println("This is Projection test.");
@@ -31,7 +30,6 @@ public class Benchmark {
         System.out.println("Project res length: " + projectionRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Projection operation takes " + (end - start) + " ms. ");
-        projectionRes.unpersist();
 
         //aggregation test
         System.out.println("This is Aggregation test.");
@@ -40,18 +38,15 @@ public class Benchmark {
         System.out.println("Aggregation res length: " + aggRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Aggregation operation takes " + (end - start) + " ms. ");
-        aggRes.unpersist();
 
 
         //join test
         System.out.println("This is Join test.");
         start = Double.parseDouble(String.valueOf(new Date().getTime()));
         Dataset<Row> joinRes = peopleData.join(courseData,peopleData.col("id").equalTo(courseData.col("student_id")), "left_outer");
-        joinRes.show();
         System.out.println("Join res length: " + joinRes.count());
         end = Double.parseDouble(String.valueOf(new Date().getTime()));
         System.out.println("Join operation takes " + (end - start) + " ms. ");
-        joinRes.unpersist();
 
         peopleData.unpersist();
     }

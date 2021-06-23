@@ -5,14 +5,15 @@ import org.apache.spark.sql.*;
 import java.util.Date;
 
 public class ReadTextJson {
-    public static void main(String[] args) throws AnalysisException {
+    public static void main(String[] args) throws AnalysisException, InterruptedException {
         SparkSession session = SparkSession
                 .builder()
                 .appName("ReadTextJson")
                 .getOrCreate();
 
         Dataset<Row> course = session.read().option("multiline", "false").json("/tmp/spark/course.json");
-        course.persist();
+        course = course.persist();
+        System.out.println(course.count());
 
         Dataset<Row> data1 = session.read().option("multiline", "false").json("/tmp/spark/line_100w.json");
         Benchmark.apOperations(data1, course, session);
@@ -23,10 +24,11 @@ public class ReadTextJson {
         Dataset<Row> data3 = session.read().option("multiline", "false").json("/tmp/spark/child_100w_5.json");
         Benchmark.apOperations(data3, course, session);
 
-        Dataset<Row> data4 = session.read().option("multiline", "false").json("/tmp/spark/child_100w_10.json");
+        Dataset<Row> data4 = session.read().option("multiline", "false").json("/tmp/spark/child_500w_5.json");
         Benchmark.apOperations(data4, course, session);
 
         course.unpersist();
+
 
         System.out.println("Finish all jobs!!!");
         System.out.println("*****************************************************************************************************************");
