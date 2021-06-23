@@ -7,11 +7,30 @@
 这里使用的是 Kubernetes 进行容器管理，然后使用 Spark Operator 来在 K8s 上运行 Spark 程序。
 
 Kubernetes 安装教程：https://pipe.ccm.ink/archives/k8s
+
 Spark Operator：https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
 
 ### 2. 运行 Spark
 
 使用 `k8s-application` 目录下的 yaml 文件，运行对应的 Spark 程序。
+
 ```bash
+# 启动程序
 kubectl apply -f readfile.yaml
+
+# 停止程序
+kubectl delete -f readfile.yaml
+```
+
+运行成功后，即可看到 K8s 中有对应的 driver 和 executor 生成。
+
+![spark-application](https://user-images.githubusercontent.com/43266446/123055681-bbdcd100-d438-11eb-8559-32e6b133d28b.png)
+
+### 3. 测试数据
+
+测试数据生成程序保存在了 `data` 目录下，使用 Golang 编写，采用了 Go mod 进行包管理。
+
+``` bash
+cd data
+go run data
 ```
